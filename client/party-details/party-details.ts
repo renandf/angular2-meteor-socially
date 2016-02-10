@@ -6,6 +6,8 @@ import {Parties} from 'collections/parties';
 
 import {RequireUser} from 'meteor-accounts';
 
+import {MeteorComponent} from 'angular2-meteor';
+
 function checkPermissions(instruction: ComponentInstruction) {
   var partyId = instruction.params['partyId'];
   var party = Parties.findOne(partyId);
@@ -20,12 +22,15 @@ function checkPermissions(instruction: ComponentInstruction) {
   directives: [RouterLink]
 })
 @CanActivate(checkPermissions)
-export class PartyDetails {
+export class PartyDetails extends MeteorComponent {
   party: Party;
 
   constructor(params: RouteParams) {
+    super();
     var partyId = params.get('partyId');
-    this.party = Parties.findOne(partyId);
+    this.subscribe('party', partyId, () => {
+      this.party = Parties.findOne(partyId);
+    }, true);
   }
 
   saveParty(party) {
