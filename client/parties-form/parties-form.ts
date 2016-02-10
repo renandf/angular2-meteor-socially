@@ -4,16 +4,25 @@ import {FormBuilder, Control, ControlGroup, Validators} from 'angular2/common';
 
 import {Parties} from 'collections/parties';
 
+import {MeteorComponent} from 'angular2-meteor';
+
+import {AccountsUI} from 'meteor-accounts-ui';
+
+import {InjectUser} from 'meteor-accounts';
+
 @Component({
   selector: 'parties-form'
 })
 @View({
-  templateUrl: '/client/parties-form/parties-form.html'
+  templateUrl: '/client/parties-form/parties-form.html',
+  directives: [AccountsUI]
 })
-export class PartiesForm {
+@InjectUser()
+export class PartiesForm extends MeteorComponent {
   partiesForm: ControlGroup;
 
   constructor() {
+    super();
     var fb = new FormBuilder();
     this.partiesForm = fb.group({
       name: ['', Validators.required],
@@ -24,15 +33,20 @@ export class PartiesForm {
 
   addParty(party) {
     if (this.partiesForm.valid) {
-      Parties.insert({
-        name: party.name,
-        description: party.description,
-        location: party.location
-      });
+      if (Meteor.userId()) {
+        Parties.insert({
+          name: party.name,
+          description: party.description,
+          location: party.location,
+          owner: Meteor.userId()
+        });
 
-      (<Control>this.partiesForm.controls['name']).updateValue('');
-      (<Control>this.partiesForm.controls['description']).updateValue('');
-      (<Control>this.partiesForm.controls['location']).updateValue('');
+        (<Control>this.partiesForm.controls['name']).updateValue('');
+        (<Control>this.partiesForm.controls['description']).updateValue('');
+        (<Control>this.partiesForm.controls['location']).updateValue('');
+      } else {
+        alert('Please log in to add a party');
+      }
     }
   }
 }
