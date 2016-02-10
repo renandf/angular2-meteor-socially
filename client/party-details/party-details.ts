@@ -12,7 +12,7 @@ import {Parties} from 'collections/parties';
   directives: [RouterLink]
 })
 export class PartyDetails {
-  party: Object;
+  party: Party;
 
   constructor(params: RouteParams) {
     var partyId = params.get('partyId');
