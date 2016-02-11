@@ -6,4 +6,4 @@ Implemented by [Renan Castro](http://renancastro.com).
 
 ## Demo
 
-You can view the demo here: []()
+You can view the demo here: [renan-socially.meteor.com](http://renan-socially.meteor.com)
